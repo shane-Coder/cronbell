@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Dashboard · PulseCheck{% endblock %}
+{% block title %}Dashboard · Cronbell{% endblock %}
 {% block content %}
 {% if not user.email_verified %}
 <div class="verify-banner">
@@ -50,13 +50,13 @@
     <li><strong>Copy its ping URL</strong> from the monitor's page once it's created.</li>
     <li><strong>Add one line to your job:</strong> <code>curl -fsS &lt;your-link&gt;</code>, run only on success.</li>
   </ol>
-  <p class="muted">That's it — PulseCheck emails you (and Slack/Discord/webhook, if you set those up) the moment a ping doesn't arrive on schedule.</p>
+  <p class="muted">That's it — Cronbell emails you (and Slack/Discord/webhook, if you set those up) the moment a ping doesn't arrive on schedule.</p>
 </div>
 {% endif %}
 
 <details class="card intro-panel" id="intro-panel" {% if not monitors %}open{% endif %}>
-  <summary>What is PulseCheck, exactly?</summary>
-  <p class="muted">A heartbeat monitor for automated tasks instead of a person. Your job pings PulseCheck when it finishes; if that ping goes quiet, you get alerted — before you find out the hard way, days later.</p>
+  <summary>What is Cronbell, exactly?</summary>
+  <p class="muted">A heartbeat monitor for automated tasks instead of a person. Your job pings Cronbell when it finishes; if that ping goes quiet, you get alerted — before you find out the hard way, days later.</p>
   <p class="muted">Same idea as Healthchecks.io or Cronitor, self-hostable and open here. It doesn't replace Prometheus/Grafana — they watch live services, this watches jobs that only run occasionally.</p>
   <p><a href="/docs">Full docs, integration examples, and the roadmap &rarr;</a></p>
 </details>

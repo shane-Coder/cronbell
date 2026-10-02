@@ -37,7 +37,7 @@ def public_status_page(token: str, request: Request, db: Session = Depends(get_d
         {
             "request": request,
             "user": None,
-            "owner_name": owner.display_name or "PulseCheck",
+            "owner_name": owner.display_name or "Cronbell",
             "monitor_rows": monitor_rows,
         },
     )

@@ -1,9 +1,11 @@
-# PulseCheck
+# Cronbell
+
+*Formerly PulseCheck — renamed in October 2026.*
 
 A dead-man's-switch monitoring service for cron jobs, scheduled scripts, and background tasks.
 
 Your scheduled job pings a unique URL every time it finishes successfully. If a ping doesn't
-show up within the expected window, PulseCheck assumes something broke and emails you —
+show up within the expected window, Cronbell assumes something broke and emails you —
 before you find out the hard way, days later.
 
 > **Status:** the architecture change is done — the always-on Celery worker is gone, replaced
@@ -15,7 +17,7 @@ before you find out the hard way, days later.
 
 Most monitoring (Prometheus, UptimeRobot, etc.) watches things that are already running.
 Nothing watches for a cron job that never started, or a script that crashed before finishing —
-that's the gap this fills. PulseCheck watches for the *absence* of a signal, not the presence
+that's the gap this fills. Cronbell watches for the *absence* of a signal, not the presence
 of an error.
 
 ## Features

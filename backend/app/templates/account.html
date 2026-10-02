@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Account settings · PulseCheck{% endblock %}
+{% block title %}Account settings · Cronbell{% endblock %}
 {% block content %}
 <h1>Account settings</h1>
 {% if error %}<p class="error">{{ error }}</p>{% endif %}
@@ -43,7 +43,7 @@
       <input type="url" name="discord_webhook_url" value="{{ user.discord_webhook_url or '' }}" placeholder="https://discord.com/api/webhooks/...">
     </label>
     <label>Generic webhook URL <span class="muted">(gets a JSON POST, any shape you want)</span>
-      <input type="url" name="generic_webhook_url" value="{{ user.generic_webhook_url or '' }}" placeholder="https://your-system.example.com/hooks/pulsecheck">
+      <input type="url" name="generic_webhook_url" value="{{ user.generic_webhook_url or '' }}" placeholder="https://your-system.example.com/hooks/cronbell">
     </label>
     <button type="submit">Save alert channels</button>
   </form>
@@ -66,7 +66,7 @@
   <code class="ping-url">{{ request.base_url }}metrics/{{ user.metrics_token }}</code>
   <p class="muted">Example <code>prometheus.yml</code> scrape config:</p>
   <pre>scrape_configs:
-  - job_name: pulsecheck
+  - job_name: cronbell
     metrics_path: /metrics/{{ user.metrics_token }}
     static_configs:
       - targets: ["{{ request.base_url.hostname }}"]

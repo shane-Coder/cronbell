@@ -41,10 +41,10 @@ def _send_verification_email(email: str) -> None:
     verify_url = f"{settings.base_url}verify-email/{token}"
     send_email(
         to=email,
-        subject="[PulseCheck] Verify your email",
+        subject="[Cronbell] Verify your email",
         body=(
             f"Confirm this is your email address: {verify_url}\n\n"
-            f"This link expires in 24 hours. If you didn't create a PulseCheck account, "
+            f"This link expires in 24 hours. If you didn't create a Cronbell account, "
             "you can ignore this."
         ),
     )
@@ -180,7 +180,7 @@ def forgot_password(
         reset_url = f"{settings.base_url}reset-password/{token}"
         send_email(
             to=user.email,
-            subject="[PulseCheck] Reset your password",
+            subject="[Cronbell] Reset your password",
             body=(
                 f"Someone (hopefully you) asked to reset the password on this account.\n\n"
                 f"Reset it here: {reset_url}\n\n"

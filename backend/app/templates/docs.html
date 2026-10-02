@@ -1,13 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Docs · PulseCheck{% endblock %}
+{% block title %}Docs · Cronbell{% endblock %}
 {% block content %}
 <h1>Docs</h1>
-<p class="muted">How to wire PulseCheck into a job, and where it fits next to the monitoring you probably already run.</p>
+<p class="muted">How to wire Cronbell into a job, and where it fits next to the monitoring you probably already run.</p>
 
 <div class="card">
   <h2>The short version</h2>
-  <p>PulseCheck watches for a job going <strong>silent</strong>, not for it going wrong.</p>
-  <p>You give PulseCheck a URL. Your job hits that URL when it finishes. If the URL doesn't get hit on schedule, PulseCheck assumes the job failed and emails you — a cron job that silently stops running, a backup script that crashes before it finishes, a CI step that never even started.</p>
+  <p>Cronbell watches for a job going <strong>silent</strong>, not for it going wrong.</p>
+  <p>You give Cronbell a URL. Your job hits that URL when it finishes. If the URL doesn't get hit on schedule, Cronbell assumes the job failed and emails you — a cron job that silently stops running, a backup script that crashes before it finishes, a CI step that never even started.</p>
 </div>
 
 <div class="card">
@@ -52,7 +52,7 @@ curl -fsS https://pulsecheck-shivam.fly.dev/ping/&lt;token&gt;</pre>
   <pre>- name: Run scheduled task
   run: ./scripts/nightly.sh
 
-- name: Report success to PulseCheck
+- name: Report success to Cronbell
   if: success()
   run: curl -fsS https://pulsecheck-shivam.fly.dev/ping/&lt;token&gt;</pre>
 
@@ -62,14 +62,14 @@ ExecStart=/usr/local/bin/run-job.sh
 ExecStartPost=/usr/bin/curl -fsS https://pulsecheck-shivam.fly.dev/ping/&lt;token&gt;</pre>
 
   <h3>Airflow DAG</h3>
-  <pre>def notify_pulsecheck(context):
+  <pre>def notify_cronbell(context):
     import requests
     requests.get("https://pulsecheck-shivam.fly.dev/ping/&lt;token&gt;", timeout=5)
 
 task = PythonOperator(
     task_id="nightly_job",
     python_callable=run_job,
-    on_success_callback=notify_pulsecheck,
+    on_success_callback=notify_cronbell,
 )</pre>
 </div>
 
@@ -87,9 +87,9 @@ task = PythonOperator(
       <tr><th>You have...</th><th>Use...</th></tr>
     </thead>
     <tbody>
-      <tr><td>A cron job, backup, or scheduled script</td><td><strong>PulseCheck</strong> — nothing else notices when it just doesn't run</td></tr>
+      <tr><td>A cron job, backup, or scheduled script</td><td><strong>Cronbell</strong> — nothing else notices when it just doesn't run</td></tr>
       <tr><td>A live web service or API</td><td>Prometheus + Grafana, or UptimeRobot — they watch things that are already running</td></tr>
-      <tr><td>Both</td><td>Both, together — PulseCheck's <code>/metrics</code> endpoint feeds straight into an existing Grafana dashboard, see below</td></tr>
+      <tr><td>Both</td><td>Both, together — Cronbell's <code>/metrics</code> endpoint feeds straight into an existing Grafana dashboard, see below</td></tr>
     </tbody>
   </table>
   </div>
@@ -99,11 +99,11 @@ task = PythonOperator(
   <h2>Prometheus / Grafana</h2>
   <p>Every account has its own scrape endpoint at <code>/metrics/&lt;your-token&gt;</code> — grab the exact URL from <a href="/account">account settings</a> and treat it like a password. It exposes:</p>
   <ul>
-    <li><code>pulsecheck_monitor_up</code> — 1 or 0, per monitor</li>
-    <li><code>pulsecheck_monitor_last_ping_timestamp_seconds</code> — unix timestamp of the last ping</li>
-    <li><code>pulsecheck_monitor_seconds_since_last_ping</code> — how long it's been quiet</li>
-    <li><code>pulsecheck_monitor_period_seconds</code> — the expected interval, for context</li>
-    <li><code>pulsecheck_monitors_total{status="..."}</code> — counts by status</li>
+    <li><code>cronbell_monitor_up</code> — 1 or 0, per monitor</li>
+    <li><code>cronbell_monitor_last_ping_timestamp_seconds</code> — unix timestamp of the last ping</li>
+    <li><code>cronbell_monitor_seconds_since_last_ping</code> — how long it's been quiet</li>
+    <li><code>cronbell_monitor_period_seconds</code> — the expected interval, for context</li>
+    <li><code>cronbell_monitors_total{status="..."}</code> — counts by status</li>
   </ul>
   <p class="muted">Point an existing Prometheus at it and every monitor shows up next to everything else you already watch.</p>
 </div>
@@ -121,7 +121,7 @@ task = PythonOperator(
 <div class="card">
   <h2>FAQ</h2>
   <p><strong>My job fails partway through — will I get an alert?</strong><br>
-  Yes, as long as the ping is the last line of the script. No ping means PulseCheck assumes it didn't finish.</p>
+  Yes, as long as the ping is the last line of the script. No ping means Cronbell assumes it didn't finish.</p>
   <p><strong>My job legitimately runs long sometimes — will that trigger false alarms?</strong><br>
   Not if the grace period covers it. Set grace generously for a job with variable runtime.</p>
   <p><strong>Do I need to install anything?</strong><br>

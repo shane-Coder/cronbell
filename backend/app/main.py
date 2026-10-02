@@ -26,7 +26,7 @@ CSRF_EXEMPT_PREFIXES = ("/register", "/login", "/forgot-password", "/reset-passw
 # to "/docs" too, which silently wins the route over our own docs page since
 # it's registered before app.include_router() runs. We don't expose a public
 # API surface here, so there's nothing worth keeping Swagger UI around for.
-app = FastAPI(title="PulseCheck", docs_url=None, redoc_url=None)
+app = FastAPI(title="Cronbell", docs_url=None, redoc_url=None)
 
 app.state.limiter = limiter
 

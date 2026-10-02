@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     smtp_port: int = 587
     smtp_user: str = ""
     smtp_password: str = ""
-    smtp_from: str = "alerts@pulsecheck.local"
+    smtp_from: str = "alerts@cronbell.local"
     smtp_use_tls: bool = True
 
     overdue_check_interval_seconds: int = 60

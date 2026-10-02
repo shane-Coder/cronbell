@@ -102,9 +102,9 @@ def check_inactive_accounts() -> dict:
             if days_inactive >= settings.inactivity_delete_days and user.inactivity_reminder_stage >= 2:
                 send_email(
                     to=user.email,
-                    subject="[PulseCheck] Your account has been deleted due to inactivity",
+                    subject="[Cronbell] Your account has been deleted due to inactivity",
                     body=(
-                        f"Your PulseCheck account has had no activity for over "
+                        f"Your Cronbell account has had no activity for over "
                         f"{settings.inactivity_delete_days} days (no logins, and no monitors "
                         "receiving pings), so it's been deleted along with its monitors and "
                         "history, as you were told to expect in two earlier reminder emails.\n\n"
@@ -120,9 +120,9 @@ def check_inactive_accounts() -> dict:
                 remaining = settings.inactivity_delete_days - days_inactive
                 send_email(
                     to=user.email,
-                    subject="[PulseCheck] Final notice: your account will be deleted soon",
+                    subject="[Cronbell] Final notice: your account will be deleted soon",
                     body=(
-                        f"Your PulseCheck account has had no activity for {days_inactive} days. "
+                        f"Your Cronbell account has had no activity for {days_inactive} days. "
                         f"If nothing changes, it'll be deleted in about {max(remaining, 1)} days, "
                         "along with its monitors and history.\n\n"
                         "Log in or let one of your monitors receive a ping to cancel this."
@@ -133,9 +133,9 @@ def check_inactive_accounts() -> dict:
             elif days_inactive >= settings.inactivity_reminder_days and user.inactivity_reminder_stage == 0:
                 send_email(
                     to=user.email,
-                    subject="[PulseCheck] Still using this account?",
+                    subject="[Cronbell] Still using this account?",
                     body=(
-                        f"Your PulseCheck account has had no activity for {days_inactive} days — "
+                        f"Your Cronbell account has had no activity for {days_inactive} days — "
                         "no logins, and no monitors receiving pings.\n\n"
                         "No action needed if you're still using it elsewhere or just haven't "
                         "needed to check in. If it stays quiet, we'll send one more reminder "
@@ -161,12 +161,12 @@ def send_down_alerts(monitor: Monitor) -> None:
     owner = monitor.owner
     send_email(
         to=owner.email,
-        subject=f"[PulseCheck] {monitor.name} is overdue",
+        subject=f"[Cronbell] {monitor.name} is overdue",
         body=(
             f"Monitor \"{monitor.name}\" has not checked in within its expected window.\n\n"
             "This usually means the scheduled job it's watching didn't run, or failed "
             "before it could send its ping.\n\n"
-            "Log in to PulseCheck to see details."
+            "Log in to Cronbell to see details."
         ),
     )
     send_slack_alert(

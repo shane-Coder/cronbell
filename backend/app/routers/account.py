@@ -88,7 +88,7 @@ def resend_verification(
         verify_url = f"{settings.base_url}verify-email/{token}"
         send_email(
             to=user.email,
-            subject="[PulseCheck] Verify your email",
+            subject="[Cronbell] Verify your email",
             body=f"Confirm this is your email address: {verify_url}\n\nThis link expires in 24 hours.",
         )
     return templates.TemplateResponse(
@@ -144,14 +144,14 @@ def test_webhook(
     user: User = Depends(get_current_user),
 ):
     senders = {
-        "slack": (user.slack_webhook_url, send_slack_alert, "PulseCheck test alert — if you can see this, Slack is wired up correctly."),
-        "discord": (user.discord_webhook_url, send_discord_alert, "PulseCheck test alert — if you can see this, Discord is wired up correctly."),
+        "slack": (user.slack_webhook_url, send_slack_alert, "Cronbell test alert — if you can see this, Slack is wired up correctly."),
+        "discord": (user.discord_webhook_url, send_discord_alert, "Cronbell test alert — if you can see this, Discord is wired up correctly."),
     }
     if channel == "generic":
         url = user.generic_webhook_url
         if not url:
             raise HTTPException(status_code=400, detail="Save a generic webhook URL first.")
-        send_generic_webhook(url, {"event": "test", "message": "PulseCheck test alert"})
+        send_generic_webhook(url, {"event": "test", "message": "Cronbell test alert"})
     elif channel in senders:
         url, sender, text = senders[channel]
         if not url:

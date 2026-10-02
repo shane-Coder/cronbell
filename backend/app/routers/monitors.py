@@ -41,7 +41,7 @@ def home(
     db: Session = Depends(get_db),
     user: User | None = Depends(get_current_user_optional),
 ):
-    # Logged out: this is the front door — show what PulseCheck is before
+    # Logged out: this is the front door — show what Cronbell is before
     # asking anyone to sign in. Logged in: show the actual dashboard.
     if user is None:
         return templates.TemplateResponse("landing.html", {"request": request, "user": None})

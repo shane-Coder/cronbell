@@ -6,7 +6,7 @@ MAINTENANCE_HTML = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PulseCheck — under maintenance</title>
+<title>Cronbell — under maintenance</title>
 <style>
   :root { color-scheme: light dark; }
   * { box-sizing: border-box; }
@@ -58,7 +58,8 @@ MAINTENANCE_HTML = """<!doctype html>
 </head>
 <body>
   <div class="card">
-    <span class="brand"><span class="dot"></span>PulseCheck</span>
+    <span class="brand"><span class="dot"></span>Cronbell</span>
+    <p class="muted">Formerly PulseCheck.</p>
     <h1>Under maintenance</h1>
     <p>The live demo is temporarily paused while I finish a UI rebuild and an infrastructure change.</p>
     <p class="muted">The source code, README, and full commit history are on <a href="https://github.com/shane-Coder/PulseCheck">GitHub</a> in the meantime.</p>
