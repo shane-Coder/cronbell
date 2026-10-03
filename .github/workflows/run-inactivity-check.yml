@@ -6,9 +6,10 @@ name: Run inactivity check
 # sensitive.
 
 on:
-  # Paused: the live demo is in maintenance mode (see app/maintenance.py),
-  # so this would just hit a 503 once a day for nothing. Re-enable the
-  # schedule line once maintenance mode is off and the DB is running again.
+  # Paused on purpose for the first few weeks after relaunch: accounts that
+  # signed up before the pause would be treated as 60+ days inactive and get
+  # a "still using this?" email straight after the announcement. Re-enable
+  # the schedule line once that grace period has passed.
   # schedule:
   #   - cron: "0 3 * * *"
   workflow_dispatch:

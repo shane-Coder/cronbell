@@ -5,18 +5,16 @@ name: Run overdue check
 # /internal/run-overdue-check endpoint on a schedule. The check itself is a
 # single cheap query, so this triggers it, not runs it.
 #
-# 5 minutes, not 1: GitHub does not guarantee scheduled workflows fire
-# exactly on time, and recommends against relying on anything tighter,
-# especially during periods of high load on their end. Detection lag is now
-# up to ~5-10 minutes worst case (was ~1 minute with Celery beat) — a
+# 15 minutes, not 1: GitHub does not guarantee scheduled workflows fire
+# exactly on time, and recommends against relying on anything tighter. A
+# slower cron also lets the Fly web machine auto-stop between runs and lets
+# the Neon database suspend, which is what keeps the monthly bill under
+# Fly's $5 waiver. Detection lag is up to ~15-30 minutes worst case — a
 # deliberate cost/responsiveness trade-off, not an oversight.
 
 on:
-  # Paused: the live demo is in maintenance mode (see app/maintenance.py),
-  # so this would just hit a 503 every 5 minutes for nothing. Re-enable the
-  # schedule line once maintenance mode is off and the DB is running again.
-  # schedule:
-  #   - cron: "*/5 * * * *"
+  schedule:
+    - cron: "*/15 * * * *"
   workflow_dispatch:
 
 jobs:
