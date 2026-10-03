@@ -11,8 +11,9 @@ before you find out the hard way, days later.
 > **Status:** live as a free demo at [pulsecheck-shivam.fly.dev](https://pulsecheck-shivam.fly.dev)
 > (the hostname predates the rename and will move to a custom domain). It runs on a small
 > Fly.io machine and a free Neon Postgres, so the first request after a quiet spell can take a
-> few seconds, and an overdue job is noticed within roughly 15–30 minutes (the check runs on a
-> GitHub Actions cron, see [Stack](#stack)). Everything also runs fully locally via Docker.
+> few seconds, and an overdue job is noticed within roughly 15–30 minutes (an external scheduler
+> triggers the check every 15 minutes, see [Stack](#stack)). Everything also runs fully locally
+> via Docker.
 
 ## Why
 
@@ -45,8 +46,9 @@ of an error.
 - **DB:** PostgreSQL (SQLAlchemy ORM) — Neon in production, a plain Postgres container locally
 - **Scheduled checks:** no background worker — the overdue-monitor sweep and daily inactivity
   check are plain functions behind an internal, token-guarded HTTP endpoint
-  (`POST /internal/run-overdue-check`), triggered every 15 minutes by a GitHub Actions cron in
-  this repo instead of a process that has to stay running 24/7
+  (`POST /internal/run-overdue-check`), triggered every 15 minutes by an external scheduler
+  (cron-job.org), with a GitHub Actions cron in this repo as a backup, instead of a process
+  that has to stay running 24/7
 - **Redis:** rate limiting only (`slowapi`) — it used to also be the Celery broker; that's gone
 - **Frontend:** server-rendered Jinja2 templates (no separate JS build), IBM Plex Sans/Mono
 - **Auth:** email + password, JWT stored in an HttpOnly cookie
@@ -158,9 +160,12 @@ Deployed on Fly.io (`fly.toml` in `backend/`) as one auto-stop-when-idle web mac
 Postgres on Neon (Singapore, next to the Fly machine) and a small pay-as-you-go Redis for rate
 limiting. There is no worker machine: v2 ran one 24/7 just to fire two scheduled checks a
 minute apart, which was the biggest line item on the Fly bill, so v3 replaced it with a GitHub
-Actions cron hitting an internal endpoint. The cron runs every 15 minutes rather than every 5
-so the web machine and the database can both sleep between runs, which is what keeps the
-monthly bill aimed under Fly's $5 minimum-charge threshold. Nothing Fly-specific is in the
+Actions cron hitting an internal endpoint. GitHub's scheduler turned out to be too unreliable
+to be the only trigger (on a quiet repo it ran every few hours), so a free external scheduler
+(cron-job.org) is the primary trigger and the GitHub workflow stays as a backup. The check
+runs every 15 minutes rather than every 5 so the web machine and the database can both sleep
+between runs, which is what keeps the monthly bill aimed under Fly's $5 minimum-charge
+threshold. Nothing Fly-specific is in the
 code itself; `docker-compose.yml` maps directly onto whatever Docker-based host you'd rather
 use (Railway, Render, your own box).
 

@@ -5,12 +5,15 @@ name: Run overdue check
 # /internal/run-overdue-check endpoint on a schedule. The check itself is a
 # single cheap query, so this triggers it, not runs it.
 #
-# 15 minutes, not 1: GitHub does not guarantee scheduled workflows fire
-# exactly on time, and recommends against relying on anything tighter. A
-# slower cron also lets the Fly web machine auto-stop between runs and lets
-# the Neon database suspend, which is what keeps the monthly bill under
-# Fly's $5 waiver. Detection lag is up to ~15-30 minutes worst case — a
-# deliberate cost/responsiveness trade-off, not an oversight.
+# This is the BACKUP trigger. The primary is an external scheduler
+# (cron-job.org) POSTing to the same endpoint every 15 minutes, because
+# GitHub's schedule is best-effort and on this quiet repo it only fired every
+# few hours. The check is idempotent, so both running is harmless.
+#
+# 15 minutes, not 1: a slower cadence lets the Fly web machine auto-stop
+# between runs and lets the Neon database suspend, which is what keeps the
+# monthly bill under Fly's $5 waiver. Detection lag is ~15-30 minutes worst
+# case — a deliberate cost/responsiveness trade-off, not an oversight.
 
 on:
   schedule:
