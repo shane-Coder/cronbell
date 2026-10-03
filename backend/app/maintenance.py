@@ -62,7 +62,7 @@ MAINTENANCE_HTML = """<!doctype html>
     <p class="muted">Formerly PulseCheck.</p>
     <h1>Under maintenance</h1>
     <p>The live demo is temporarily paused while I finish a UI rebuild and an infrastructure change.</p>
-    <p class="muted">The source code, README, and full commit history are on <a href="https://github.com/shane-Coder/PulseCheck">GitHub</a> in the meantime.</p>
+    <p class="muted">The source code, README, and full commit history are on <a href="https://github.com/shane-Coder/cronbell">GitHub</a> in the meantime.</p>
   </div>
 </body>
 </html>"""

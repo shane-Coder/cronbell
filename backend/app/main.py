@@ -119,3 +119,8 @@ async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
 @app.get("/healthz")
 def healthz():
     return {"status": "ok"}
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return RedirectResponse(url="/static/favicon.svg", status_code=301)

@@ -18,9 +18,10 @@ MAX_WEBHOOK_URL_LENGTH = 500
 
 
 @router.get("")
-def account_home(request: Request, user: User = Depends(get_current_user)):
+def account_home(request: Request, verification_sent: int = 0, user: User = Depends(get_current_user)):
+    success = "Verification email sent — check your inbox." if verification_sent else None
     return templates.TemplateResponse(
-        "account.html", {"request": request, "user": user, "error": None, "success": None}
+        "account.html", {"request": request, "user": user, "error": None, "success": success}
     )
 
 
@@ -91,10 +92,7 @@ def resend_verification(
             subject="[Cronbell] Verify your email",
             body=f"Confirm this is your email address: {verify_url}\n\nThis link expires in 24 hours.",
         )
-    return templates.TemplateResponse(
-        "account.html",
-        {"request": request, "user": user, "error": None, "success": "Verification email sent — check your inbox."},
-    )
+    return RedirectResponse(url="/account?verification_sent=1", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @router.post("/webhooks")

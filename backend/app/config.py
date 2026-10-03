@@ -25,6 +25,13 @@ class Settings(BaseSettings):
     jwt_expire_minutes: int = 10080
 
     base_url: str = "http://localhost:8000"
+
+    @field_validator("base_url")
+    @classmethod
+    def _ensure_trailing_slash(cls, v: str) -> str:
+        # Links are built as f"{base_url}verify-email/...", so a missing slash produced "https://hostverify-email/...".
+        return v.rstrip("/") + "/"
+
     environment: str = "development"
 
     # When true, every request (except /healthz) gets a static "under

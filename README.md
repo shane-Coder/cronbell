@@ -8,10 +8,11 @@ Your scheduled job pings a unique URL every time it finishes successfully. If a 
 show up within the expected window, Cronbell assumes something broke and emails you —
 before you find out the hard way, days later.
 
-> **Status:** the architecture change is done — the always-on Celery worker is gone, replaced
-> by a GitHub Actions cron (see [Stack](#stack)). The live demo URL currently serves a
-> maintenance page while I finish the UI rebuild; everything below runs fully locally via
-> Docker in the meantime.
+> **Status:** live as a free demo at [pulsecheck-shivam.fly.dev](https://pulsecheck-shivam.fly.dev)
+> (the hostname predates the rename and will move to a custom domain). It runs on a small
+> Fly.io machine and a free Neon Postgres, so the first request after a quiet spell can take a
+> few seconds, and an overdue job is noticed within roughly 15–30 minutes (the check runs on a
+> GitHub Actions cron, see [Stack](#stack)). Everything also runs fully locally via Docker.
 
 ## Why
 
@@ -41,11 +42,11 @@ of an error.
 ## Stack
 
 - **API/backend:** FastAPI
-- **DB:** PostgreSQL (SQLAlchemy ORM)
+- **DB:** PostgreSQL (SQLAlchemy ORM) — Neon in production, a plain Postgres container locally
 - **Scheduled checks:** no background worker — the overdue-monitor sweep and daily inactivity
   check are plain functions behind an internal, token-guarded HTTP endpoint
-  (`POST /internal/run-overdue-check`), triggered by a GitHub Actions cron in this repo
-  instead of a process that has to stay running 24/7
+  (`POST /internal/run-overdue-check`), triggered every 15 minutes by a GitHub Actions cron in
+  this repo instead of a process that has to stay running 24/7
 - **Redis:** rate limiting only (`slowapi`) — it used to also be the Celery broker; that's gone
 - **Frontend:** server-rendered Jinja2 templates (no separate JS build), IBM Plex Sans/Mono
 - **Auth:** email + password, JWT stored in an HttpOnly cookie
@@ -134,7 +135,7 @@ backend/
       status_page.py                        the public, no-auth status page
       pages.py                              /docs
     templates/                              Jinja2 HTML (landing, dashboard, docs, admin, ...)
-    static/                                  CSS
+    static/                                  CSS, favicon
   tests/                                   pytest suite — auth, monitors, account, admin, alert-firing
   pytest.ini
   requirements-dev.txt                    pytest + httpx, not in the production image
@@ -147,17 +148,21 @@ backend/
 - [x] v3: UI rebuild, input hardening, DB indexing, drop the always-on worker for a
       GitHub Actions cron
 - [x] v4: Slack/Discord/generic webhook alerts, opt-in public status pages
+- [ ] Custom domain, plus an authenticated sending domain so verification and alert emails
+      stop depending on a personal Gmail sender
 - [ ] v5: "start"/"fail" ping variants, pricing, payments, team accounts, an API
 
 ## Deployment
 
-Deployed on Fly.io (`fly.toml` in `backend/`) — an auto-stop-when-idle web process and a small
-Postgres instance. No dedicated worker machine anymore: v2 ran one 24/7 just to fire two
-scheduled checks a minute apart, which turned out to be the single biggest line item on the
-Fly bill. v3 replaced it with a GitHub Actions cron hitting an internal endpoint, cutting the
-always-on compute to just Postgres. Nothing Fly-specific in the code itself;
-`docker-compose.yml` maps directly onto whatever Docker-based host you'd rather use (Railway,
-Render, your own box).
+Deployed on Fly.io (`fly.toml` in `backend/`) as one auto-stop-when-idle web machine, with
+Postgres on Neon (Singapore, next to the Fly machine) and a small pay-as-you-go Redis for rate
+limiting. There is no worker machine: v2 ran one 24/7 just to fire two scheduled checks a
+minute apart, which was the biggest line item on the Fly bill, so v3 replaced it with a GitHub
+Actions cron hitting an internal endpoint. The cron runs every 15 minutes rather than every 5
+so the web machine and the database can both sleep between runs, which is what keeps the
+monthly bill aimed under Fly's $5 minimum-charge threshold. Nothing Fly-specific is in the
+code itself; `docker-compose.yml` maps directly onto whatever Docker-based host you'd rather
+use (Railway, Render, your own box).
 
 ## License
 

@@ -3,10 +3,10 @@
 {% block content %}
 {% if not user.email_verified %}
 <div class="verify-banner">
-  <span>Verify your email so you don't miss an alert — we sent a link to <strong>{{ user.email }}</strong>.</span>
+  <span>Confirm your email address (<strong>{{ user.email }}</strong>) so you don't miss an alert.</span>
   <form method="post" action="/account/resend-verification">
     {{ csrf_field(request) }}
-    <button type="submit" class="link-button">Resend</button>
+    <button type="submit" class="link-button">Email me a link</button>
   </form>
 </div>
 {% endif %}
